@@ -1,4 +1,69 @@
 import org.jibble.pircbot.*;
+import java.util.*;
+
+public class BotCore extends PircBot {
+	
+	private static final String[] BAD_WORDS = new String[]{"fuck","bitch","whore",
+		"asshole","cum","cock","shit","fag","nigger","twat",
+		"cunt","douche","slut","dick","nigga"};
+	private static final int WARNINGS_TO_GIVE = 2;
+	
+	private ArrayList<String> userNames = new ArrayList<String>();
+    private HashMap<String,Integer> userWarnings = new HashMap<String,Integer>();
+    private boolean userInArray = false;    
+    
+    public BotCore() {
+    	this.setName("SpamGuard");
+    }
+    
+    public void onMessage(String channel, String sender,
+            String login, String hostname, String message) {
+    	
+    	if(Arrays.asList(BAD_WORDS).contains(message.toLowerCase())){
+    		
+    		String userInfo;
+    		if(hostname.contains("gateway/web/freenode")){
+                userInfo = login;
+    		}else{
+                userInfo = hostname;
+    		}
+    		
+    		//Check if user is in the ArrayList    		
+    		if(userNames.contains(userInfo)){
+    			int warnings = userWarnings.get(userInfo);
+    			warnings++;
+    			userWarnings.put(userInfo, warnings);
+    			if(warnings > WARNINGS_TO_GIVE){    				
+    				banUser(hostname,channel,sender,userInfo);
+    			}else{    				
+    				warnUser(channel,sender,warnings);
+    			}
+    		}else{
+    			//If not in ArrayList, add user
+    			userNames.add(userInfo);
+    			//Once user is in ArrayList, add 1 to warning
+    			userWarnings.put(userInfo, 1);
+    			warnUser(channel, sender,1);
+    		}
+    	}
+    }
+
+	private void banUser(String hostname, String channel, String sender, String userInfo) {		
+		if(hostname.contains("gateway/web/freenode")){
+            userInfo += "@";
+		}
+		ban(channel, "*" + userInfo + "*");
+		kick(channel, sender, "You have sworn too many times in this channel. You have been banned.");
+	}
+
+	private void warnUser(String channel, String sender, int warnings) {
+		kick(channel, sender, "No Swearing! Warning " + warnings + " of " + WARNINGS_TO_GIVE);
+	}
+}
+
+
+
+/*import org.jibble.pircbot.*;
 import java.util.Arrays;
 import java.util.*;
 
@@ -22,4 +87,4 @@ public class BotCore extends PircBot  {
 		}
 	}
 }
-
+*/

@@ -7,6 +7,7 @@ public class core {
 		bot.setVerbose(true);
 		bot.connect("irc.andirc.net");
 		bot.joinChannel("#rootz");
+		bot.joinChannel("#test");
 
 
 	}
