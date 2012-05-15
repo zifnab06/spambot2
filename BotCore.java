@@ -45,15 +45,18 @@ public class BotCore extends PircBot {
     			userWarnings.put(userInfo, 1);
     			warnUser(channel, sender,1);
     		}
-    	}
+    	} else if (sender.equals("zifnab") || sender.equals("jcase") || sender.equals("dougpiston")) {
+		if (message.contains("!clear")) {
+			userWarnings.clear();
+                        userNames.clear();
+
+		}
+	}
     }
 
 	private void banUser(String hostname, String channel, String sender, String userInfo) {		
-		if(hostname.contains("gateway/web/freenode")){
-            userInfo += "@";
-		}
-		ban(channel, "*" + userInfo + "*");
-		kick(channel, sender, "You have sworn too many times in this channel. You have been banned.");
+		setMode(channel, "+q *" + userInfo + "*");
+		kick(channel, sender, "You have sworn too many times in this channel. You have been quieted and cannot speak.");
 	}
 
 	private void warnUser(String channel, String sender, int warnings) {
