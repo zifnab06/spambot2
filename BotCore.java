@@ -11,14 +11,13 @@ public class BotCore extends PircBot {
 	private static final int WARNINGS_TO_GIVE = 2;
 
 	private ArrayList<String> userNames = new ArrayList<String>();
-		private HashMap<String,Integer> userWarnings = new HashMap<String,Integer>();
-	   private boolean userInArray = false;
+	private HashMap<String,Integer> userWarnings = new HashMap<String,Integer>();
+	private boolean userInArray = false;
 	private String[] BAD_WORDS;
 
 	public BotCore() {
-			this.setName("Mother");
+		this.setName("Mother");
 		BAD_WORDS = readPartyList();
-
 	}
 
 	public static String[] readPartyList() {
@@ -34,7 +33,8 @@ public class BotCore extends PircBot {
 			//repeat until all lines are read
 			while ((txt = reader.readLine()) !=null) {
 				contents.append(txt)
-					.append("|");
+					.append("\n");
+
 			  }
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -50,7 +50,8 @@ public class BotCore extends PircBot {
 				e.printStackTrace();
 			}
 		}
-		String[] BAD_WORDS_RETURN = contents.toString().split("|");
+		String[] BAD_WORDS_RETURN = contents.toString().split("\n");
+		System.out.print("Initialized BAD_WORDS with: "); for (String x : BAD_WORDS_RETURN) System.out.print(x + " ");
 		return BAD_WORDS_RETURN;
 		}
 
@@ -68,8 +69,10 @@ public class BotCore extends PircBot {
 					userWarnings.put(userInfo, warnings);
 					if(warnings > WARNINGS_TO_GIVE){
 						banUser(hostname,channel,sender,userInfo);
+						break;
 					}else{
 						warnUser(channel,sender,warnings);
+						break;
 					}
 				}else{
 					//If not in ArrayList, add user
@@ -77,6 +80,7 @@ public class BotCore extends PircBot {
 					//Once user is in ArrayList, add 1 to warning
 					userWarnings.put(userInfo, 1);
 					warnUser(channel, sender,1);
+					break;
 				}
 			}
 		}
@@ -95,12 +99,13 @@ public class BotCore extends PircBot {
 
 
 	private void banUser(String hostname, String channel, String sender, String userInfo) {
-		setMode(channel, "+q *" + userInfo + "*");
+		//setMode(channel, "+q *" + userInfo + "*");
 		sendMessage(channel, sender + ", you have sworn too many times in this channel. You have been quieted and cannot speak.");
 	}
 
 	private void warnUser(String channel, String sender, int warnings) {
-		kick(channel, sender, "No Swearing! Warning " + warnings + " of " + WARNINGS_TO_GIVE);
+		//kick(channel, sender, "No Swearing! Warning " + warnings + " of " + WARNINGS_TO_GIVE);
+		sendMessage(channel, "DEBUG, WOULD HAVE KICKED " + sender);
 	}
 }
 
