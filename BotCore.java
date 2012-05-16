@@ -51,7 +51,7 @@ public class BotCore extends PircBot {
 			}
 		}
 		String[] BAD_WORDS_RETURN = contents.toString().split("\n");
-		System.out.print("Initialized BAD_WORDS with: "); for (String x : BAD_WORDS_RETURN) System.out.print(x + " ");
+		System.out.print("Initialized BAD_WORDS with: "); for (String x : BAD_WORDS_RETURN) System.out.print(x + " "); System.out.println("");
 		return BAD_WORDS_RETURN;
 		}
 
@@ -94,18 +94,25 @@ public class BotCore extends PircBot {
 				BAD_WORDS = readPartyList();
 			}
 		}
+		if (message.contains("!rules")) {
+			StringBuilder sb = new StringBuilder("Swearing is not allowed. Swearing includes");
+			for (String x : BAD_WORDS){
+				sb.append(" " + x);
+			}
+			sendMessage(channel, sb.toString());
+		}
 	}
 
 
 
 	private void banUser(String hostname, String channel, String sender, String userInfo) {
-		//setMode(channel, "+q *" + userInfo + "*");
+		setMode(channel, "+q *" + userInfo + "*");
 		sendMessage(channel, sender + ", you have sworn too many times in this channel. You have been quieted and cannot speak.");
 	}
 
 	private void warnUser(String channel, String sender, int warnings) {
-		//kick(channel, sender, "No Swearing! Warning " + warnings + " of " + WARNINGS_TO_GIVE);
-		sendMessage(channel, "DEBUG, WOULD HAVE KICKED " + sender);
+		kick(channel, sender, "No Swearing! Warning " + warnings + " of " + WARNINGS_TO_GIVE);
+		//sendMessage(channel, "DEBUG, WOULD HAVE KICKED " + sender);
 	}
 }
 
