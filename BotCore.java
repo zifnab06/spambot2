@@ -68,7 +68,7 @@ public class BotCore extends PircBot {
 					warnings++;
 					userWarnings.put(userInfo, warnings);
 					if(warnings > WARNINGS_TO_GIVE){
-						banUser(hostname,channel,sender,userInfo);
+						quietUser(hostname,channel,sender,userInfo);
 						break;
 					}else{
 						warnUser(channel,sender,warnings);
@@ -105,7 +105,7 @@ public class BotCore extends PircBot {
 
 
 
-	private void banUser(String hostname, String channel, String sender, String userInfo) {
+	private void quietUser(String hostname, String channel, String sender, String userInfo) {
 		setMode(channel, "+q *" + userInfo + "*");
 		sendMessage(channel, sender + ", you have sworn too many times in this channel. You have been quieted and cannot speak.");
 	}
